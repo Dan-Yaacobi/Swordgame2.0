@@ -129,7 +129,6 @@ inventory_bg_image = pygame.image.load(os.path.join(current_dir, "inventory_bg.j
 wooden_frame2_image = pygame.image.load(os.path.join(current_dir, "wooden frame2.png"))
 
 dead_image = pygame.image.load(os.path.join(current_dir, "dead.jpg"))
-chat_bubble = remove_background('chat bubble.png',(0,242,254),0.2)
 scroll_image = remove_background('scroll.jpg',black)
 
 ############################ Swords ############################
@@ -216,11 +215,11 @@ def item_db(item_type):
 
 
 
-
-
-
-
-
+graveyard_music = os.path.join(current_dir,"graveyard_bgm.mp3")
+forest_music = os.path.join(current_dir,"Into the Woods.mp3")
+castle_music = os.path.join(current_dir,"final_boss.mp3")
+monastery_music = os.path.join(current_dir,"monastery.mp3")
+hollow_tree_music = os.path.join(current_dir,"hollow tree.mp3")
 
 
 upgrade_sound = pygame.mixer.Sound(os.path.join(current_dir,fr"soundeffects\upgrade_sound.mp3"))
@@ -281,7 +280,7 @@ fight_button = Button(
     inactiveColour= tan,
     hoverColour=(150,0,0),
     pressedColour = orange, radius=20,
-    onClick = lambda: None)
+    onClick = lambda: Screen.current_screen.change_screen(forest_entrance))
 
 save_button = Button(
     screen, 800, 100, 100, 50, text='Save',
@@ -459,6 +458,91 @@ sell_shield_button = Button(
 
 sell_screen_buttons = [return_to_menu_button,back_shop_button,sell_sword_button,sell_shield_button]
 
+start_fight_button = Button(
+    screen, 370, 650, 300, 150, text='Start',
+    fontSize=50, margin=20,
+    inactiveColour= tan,
+    hoverColour = gold,
+    pressedColour = orange, radius=20,
+    onClick = lambda: Screen.current_screen.change_screen(forest_map))
+
+adventure_buttons = [return_to_menu_button, start_fight_button]
+
+forest_forward = Button(
+    screen, 480,250,30,30,
+    pressedColour = orange, 
+    image = forward_image,
+    onClick = lambda: Screen.current_screen.forward())
+
+forest_right = Button(
+    screen, 800, 500, 70, 52,
+    pressedColour = orange, 
+    image = forest_right_image,
+    onClick = lambda: Screen.current_screen.right())
+
+forest_left = Button(
+    screen, 100, 500, 70, 52,
+    image =forest_left_image,
+    pressedColour = orange,
+    onClick = lambda: Screen.current_screen.left()) 
+
+forest_prev = Button(
+    screen, 480, 850, 30,30,
+    image = forest_previous_image,
+    pressedColour = orange,
+    onClick = lambda: Screen.current_screen.prev()) 
+
+iron_ore_button = Button(
+    screen, 300,700, 50,50,
+    image = iron_ore_image,
+    inactiveColour = light_gray,
+    pressedColour = lavender, radius=20,
+    onClick = lambda: Screen.current_screen.collect_iron_ore())
+
+gold_ore_button = Button(
+    screen, 300,700, 50,50,
+    image = gold_ore_image,
+    inactiveColour = light_gray,
+    pressedColour = lavender, radius=20,
+    onClick = lambda: Screen.current_screen.collect_gold_ore())
+
+mushroom1_button = Button(
+    screen, 300,700, 50,50,
+    image = mushroom1_image,
+    inactiveColour = nature_green,
+    pressedColour = lavender, radius=20,
+    onClick = lambda: Screen.current_screen.collect_mushroom(mushroom1_button))
+
+mushroom2_button = Button(
+    screen, 300,700, 50,50,
+    image = mushroom1_image,
+    inactiveColour = nature_green,
+    pressedColour = lavender, radius=20,
+    onClick = lambda: Screen.current_screen.collect_mushroom(mushroom2_button))
+
+mushroom3_button = Button(
+    screen, 300,700, 50,50,
+    image = mushroom1_image,
+    inactiveColour = nature_green,
+    pressedColour = lavender, radius=20,
+    onClick = lambda: Screen.current_screen.collect_mushroom(mushroom3_button))
+
+mushroom4_button = Button(
+    screen, 300,700, 50,50,
+    image = mushroom1_image,
+    inactiveColour = nature_green,
+    pressedColour = lavender, radius=20,
+    onClick = lambda: Screen.current_screen.collect_mushroom(mushroom4_button))
+
+mushroom5_button = Button(
+    screen, 300,700, 50,50,
+    image = mushroom1_image,
+    inactiveColour = nature_green,
+    pressedColour = lavender, radius=20,
+    onClick = lambda: Screen.current_screen.collect_mushroom(mushroom5_button))
+
+mushroom_buttons = [mushroom1_button,mushroom2_button,mushroom3_button,mushroom4_button,mushroom5_button]
+forest_map_buttons = [exit_button,inventory_button,forest_forward,forest_right,forest_left,forest_prev]
 class Screen:
     #Class Static Variables
     running = True
@@ -473,24 +557,24 @@ class Screen:
     start_new_game = True
     current_bgm = None
     previous_screen = None
-    
+    current_map = None
+    current_map = None
     ALL_BUTTONS = [new_game_button,load_button,exit_button,shop_button,upgrade_button,
                    fight_button,save_button,heal_button,inventory_button,scroll_next_button,finish_read_scroll,
                    holy_charm_button,inventory_close_button,return_to_menu_button,shop_buying_button,
                    shop_selling_button,back_shop_button,shields_shop_button,swords_shop_button,previous_button,
-                   next_button,sell_shield_button,sell_sword_button,buy_sword_button,buy_shield_button,upgrade_sword_button]
+                   next_button,sell_shield_button,sell_sword_button,buy_sword_button,buy_shield_button,upgrade_sword_button,start_fight_button,
+                   forest_forward,forest_right,forest_left,forest_prev,mushroom1_button,mushroom2_button,mushroom3_button,mushroom4_button,mushroom5_button,
+                   gold_ore_button,iron_ore_button]
     
-    def __init__(self,bgm,bg,buttons_enabled,soundeffects,images_array,dynamic_buttons):
+    def __init__(self,bgm,bg,buttons_enabled,dynamic_buttons):
         '''Images_array needs to be a matrix,[[pygame surface1,(x1,y1)],[pygame surface2,(x2,y2)]...]'''
         self.bgm = bgm
         self.bg = bg
         self.buttons_enabled = buttons_enabled
-        self.soundeffects = soundeffects
-        self.images_array = images_array
         self.dynamic_buttons = dynamic_buttons # False = all buttons appear all the time, True = buttons appear under certian conditions
         
     def change_screen(self, new_screen):
-        print('here')
         Screen.previous_screen = Screen.current_screen
         Screen.current_screen = new_screen
 
@@ -571,12 +655,12 @@ class Shop(Screen):
     current_viewing_item = None
     current_viewing_item_index = 0
     current_item = None
-    MUSHY_SHIELD_COST = 15
-    GOLD_SHIELD_COST = 10
+    MUSHY_SHIELD_COST = 50
+    GOLD_SHIELD_COST = 20
     IRON_ORE_COST = 5
     GOLD_ORE_COST = 10
-    def __init__(self,bgm,bg,buttons_enabled,soundeffects,images_array,dynamic_buttons,item_type):
-        super().__init__(bgm,bg,buttons_enabled,soundeffects,images_array,dynamic_buttons)
+    def __init__(self,bgm,bg,buttons_enabled,dynamic_buttons,item_type):
+        super().__init__(bgm,bg,buttons_enabled,dynamic_buttons)
         self.item_type = item_type
 
     def change_screen(self, new_screen):
@@ -799,6 +883,7 @@ class MainMenu(Screen):
         self.display_bg()
         self.disable_buttons()
         self.enable_buttons()
+        Screen.current_map = None
         heal_price = int(((Screen.max_hp - Screen.current_hp)/100)*20)
         heal_text = font.render("Cost: " + str(heal_price),True,black,nature_green)
         screen.blit(heal_text,(670,780))
@@ -917,6 +1002,148 @@ class NewGame_Scroll(Screen):
         self.disable_specific_buttons([finish_read_scroll])
         self.change_screen(main_menu)
 
+class Adventure(Screen):
+    def action(self):
+        self.display_bg()
+        self.enable_buttons()
+        self.disable_buttons()
+        if Screen.current_map == None:
+            Screen.current_map = forestgenerator.generate().head
+
+class ForestMap(Screen):
+    tried_to_spawn = False
+    disabled_buttons = False
+    MUSHROOM_SPAWN_CHANCE = 15
+    IRON_ORE_SPAWN_CHANCE = 10
+    GOLD_ORE_SPAWN_CHANCE = 12
+    def display_bg(self):
+        screen.blit(Screen.current_map.image,(0,0))
+
+    def play_bgm(self):
+        node_type = Screen.current_map.node_type
+        if node_type == 'regular':
+            music = forest_music
+        elif node_type.find('graveyard') >= 0:
+            music = graveyard_music
+        elif node_type.find('castle') >=0:
+            if node_type == 'end castle':
+                music = castle_music
+            else:
+                music = forest_music
+        elif node_type.find('monastery') >= 0:
+            if node_type == 'end monastery' or node_type == 'monastery room':
+                music = monastery_music
+            else:
+                music = forest_music
+        elif node_type.find('hollow tree') >= 0:
+                music = hollow_tree_music
+        else:
+            music = forest_music
+        if Screen.current_screen.bgm != None:
+            if Screen.current_bgm != music:
+                pygame.mixer.music.unload()
+                pygame.mixer.music.load(music)
+                pygame.mixer.music.play(-1)
+                Screen.current_bgm = music
+
+    def action(self):
+        self.display_bg()
+        self.play_bgm()
+        self.enable_buttons()
+        if not self.disabled_buttons:
+            self.disable_buttons()
+            self.disabled_buttons = True
+        mushroom_flag = False
+        ################# Correct Buttons #################
+        if type(Screen.current_map) == ComplexNode:
+            self.disable_specific_buttons([forest_forward])
+        else:
+            if Screen.current_map.next == None:
+                self.disable_specific_buttons([forest_forward])
+            self.disable_specific_buttons([forest_left,forest_right])
+        if Screen.current_map.prev == None:
+            self.disable_specific_buttons([forest_prev])
+        if Screen.current_map.node_type == 'graveyard entrance':
+            if Screen.inventory[4] == 0: #Holy charm obtained
+                cant_enter_text = bloody_font.render('Dark forces are blocking your path', True, red,None)
+                screen.blit(cant_enter_text,(250,430))
+                self.disable_specific_buttons([forest_forward])
+        if Screen.current_map.node_type == 'regular' and type(Screen.current_map) == RegularNode:
+            mushroom_flag = True
+        ################# Spawning somthing #################
+        if self.tried_to_spawn == False and type(Screen.current_map) == RegularNode:
+            spawned_somthing = False
+            if not Screen.current_map.spawned_somthing:
+                if mushroom_flag:
+                    spawned_somthing = self.random_mushroom()
+                if Screen.current_sword.return_name() == "Copper Sword" and not spawned_somthing:
+                    spawned_somthing = self.spawn_iron_ore()
+                elif Screen.current_sword.return_level() > 3 and not spawned_somthing:
+                    spawned_somthing = self.spawn_gold_ore()
+            if spawned_somthing:
+                Screen.current_map.spawned_somthing = False
+            self.tried_to_spawn = True
+
+    def forward(self):
+        Screen.current_map = Screen.current_map.next
+        self.tried_to_spawn = False
+        self.disabled_buttons = False
+    def prev(self):
+        Screen.current_map = Screen.current_map.prev
+        self.tried_to_spawn = False
+        self.disabled_buttons = False
+
+    def left(self):
+        Screen.current_map = Screen.current_map.left
+        self.tried_to_spawn = False
+        self.disabled_buttons = False
+
+    def right(self):
+        Screen.current_map = Screen.current_map.right
+        self.tried_to_spawn = False
+        self.disabled_buttons = False
+
+    def spawn_iron_ore(self):
+        appear = random.randrange(self.IRON_ORE_SPAWN_CHANCE)
+        success = False
+        if appear == 0:
+            self.enable_specific_buttons([iron_ore_button])
+            iron_ore_button.setX(random.choice([random.randrange(100,200),random.randrange(700,800)]))
+            iron_ore_button.setY(random.randrange(600,800))
+            success = True
+        return success
+
+    def collect_iron_ore(self):
+        self.disable_specific_buttons([iron_ore_button])
+        Screen.inventory[2] += 1
+
+    def spawn_gold_ore(self):
+        appear = random.randrange(self.GOLD_ORE_SPAWN_CHANCE)
+        success = False
+        if appear == 0:
+            self.enable_specific_buttons([gold_ore_button])
+            gold_ore_button.setX(random.choice([random.randrange(100,200),random.randrange(700,800)]))
+            gold_ore_button.setY(random.randrange(600,800))
+            success = True
+        return success
+
+    def collect_gold_ore(self):
+        self.disable_specific_buttons([gold_ore_button])
+        Screen.inventory[2] += 1
+
+    def random_mushroom(self):
+        appear = random.randrange(self.MUSHROOM_SPAWN_CHANCE)
+        success = False
+        if appear == 0:
+            mushroom_i = random.randrange(len(mushroom_buttons))
+            self.enable_specific_buttons([mushroom_buttons[mushroom_i]])
+            success = True
+        return success
+    
+    def collect_mushroom(self,button):
+        Screen.inventory[1] += 1
+        self.disable_specific_buttons([button])
+
 def main_loop():
     events = pygame.event.get()
     for event in events:
@@ -930,16 +1157,18 @@ def main_loop():
 #shop_main_menu = Screen("...")
 #shop_second_menu = Screen("...")
 
-new_game = NewGame(TOWN_MUSIC,town_image,new_game_buttons,None,None,False)
-main_menu = MainMenu(TOWN_MUSIC,town_image,main_menu_buttons,None,None,False)
-new_game_scroll_menu = NewGame_Scroll(TOWN_MUSIC,town_image,[scroll_next_button,finish_read_scroll],None,None,True)
-inventory_screen = Inventory(None,inventory_bg_image,inventory_buttons,None,None,True)
-shop_menu = Screen(None,shop_image,shop_menu_buttons1,None,None,True)
-shop_sub_menu = Screen(None,shop_image,shop_menu_buttons2,None,None,True)
-sword_buying_menu = Shop(None,shop_image,buying_menu_buttons,None,None,True,Sword)
-shield_buying_menu = Shop(None,shop_image,buying_menu_buttons,None,None,True,Shield)
-upgrade_menu = UpgradeMenu(None,background_image,upgrade_screen_buttons,None,None,True)
-sell_menu = SellMenu(None,shop_image,sell_screen_buttons,None,None,True)
+new_game = NewGame(TOWN_MUSIC,town_image,new_game_buttons,False)
+main_menu = MainMenu(TOWN_MUSIC,town_image,main_menu_buttons,False)
+new_game_scroll_menu = NewGame_Scroll(TOWN_MUSIC,town_image,[scroll_next_button,finish_read_scroll],True)
+inventory_screen = Inventory(None,inventory_bg_image,inventory_buttons,True)
+shop_menu = Screen(None,shop_image,shop_menu_buttons1,True)
+shop_sub_menu = Screen(None,shop_image,shop_menu_buttons2,True)
+sword_buying_menu = Shop(None,shop_image,buying_menu_buttons,True,Sword)
+shield_buying_menu = Shop(None,shop_image,buying_menu_buttons,True,Shield)
+upgrade_menu = UpgradeMenu(None,background_image,upgrade_screen_buttons,True)
+sell_menu = SellMenu(None,shop_image,sell_screen_buttons,True)
+forest_entrance = Adventure(None,forest_entrance_image,adventure_buttons,False)
+forest_map = ForestMap(forest_music,None,forest_map_buttons,True)
 def main():
     run = Screen.running
     pygame.mouse.set_cursor(cursor)
