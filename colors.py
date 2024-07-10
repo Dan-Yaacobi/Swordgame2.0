@@ -36,7 +36,7 @@ dagger_bg = (107,130,184)
 felball_bg = (39,53,66)
 healthbar_bg = (247,247,247)
 
-goldsack_bg = (52,40,76)
+goldsack_bg = (192,44,44)
 gold_shield_bg = (87,118,81)
 copper_shield_bg = (230,234,217)
 inv_carrot_bg = (1,16,33)
